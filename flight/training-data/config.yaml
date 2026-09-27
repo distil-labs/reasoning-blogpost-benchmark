@@ -1,0 +1,153 @@
+base:
+  enable_thinking: true
+  llm_num_parallel_requests: 16
+  random_seed: 123
+  student_model_name: Qwen3.5-4B
+  task: question-answering
+  teacher_model_name: moonshotai.kimi-k3-max-thinking
+  visual_task: false
+evaluation:
+  batch_size: 4
+  llm_as_a_judge_model_name: moonshotai.kimi-k3-max-thinking
+  num_few_shot_examples: 1
+synthgen:
+  basic_mutators_to_use: []
+  clean_training_targets: false
+  generation_in_single_call: 2
+  generation_iteration_size: 128
+  generation_per_unstructured_context: null
+  generation_target: 4000
+  match_generated_distribution_to_seed: false
+  max_tool_calls_per_turn: null
+  mutation_topics: []
+  mutator_update_frequency: 5
+  mutators:
+  - auto_detect_sample_size: 50
+    beta: 0.9
+    description: null
+    method: fixed
+    name: label
+    target_distribution: uniform
+    values:
+    - itineraries whose correct answer is valid
+    - itineraries whose correct answer is valid
+    - itineraries whose correct answer is valid
+    - itineraries whose correct answer is valid
+    - itineraries whose correct answer is short_connection
+    - itineraries whose correct answer is short_connection
+    - itineraries whose correct answer is short_connection
+    - itineraries whose correct answer is short_connection
+    - itineraries whose correct answer is short_connection
+    - itineraries whose correct answer is short_connection
+    - itineraries whose correct answer is short_connection
+    - itineraries whose correct answer is short_connection
+    - itineraries whose correct answer is short_connection
+    - itineraries whose correct answer is short_connection
+    - itineraries whose correct answer is long_layover
+    - itineraries whose correct answer is long_layover
+    - itineraries whose correct answer is long_layover
+    - itineraries whose correct answer is long_layover
+    - itineraries whose correct answer is long_layover
+    - itineraries whose correct answer is long_layover
+  - auto_detect_sample_size: 50
+    beta: 0.9
+    description: null
+    method: fixed
+    name: shape
+    target_distribution: uniform
+    values:
+    - with 3 legs, where the deciding connection is the first one
+    - with 3 legs, where the deciding connection is the second one
+    - with 4 legs, where the deciding connection is the first one
+    - with 4 legs, where the deciding connection is the second one
+    - with 4 legs, where the deciding connection is the third one
+  - auto_detect_sample_size: 50
+    beta: 0.9
+    description: null
+    method: fixed
+    name: margin
+    target_distribution: uniform
+    values:
+    - where the deciding connection time is exactly at its limit (equal to the MCT,
+      or exactly 720 minutes)
+    - where the deciding connection time misses its limit by only 5 or 10 minutes
+    - where the deciding connection time is clear of its limit by more than 30 minutes
+  - auto_detect_sample_size: 50
+    beta: 0.9
+    description: null
+    method: fixed
+    name: offsets
+    target_distribution: uniform
+    values:
+    - that include an airport with a half-hour UTC offset
+    - where the deciding leg crosses midnight so the arrival date changes
+    - where the deciding leg flies westbound across several time zones
+    - where the deciding leg flies eastbound across several time zones
+  - auto_detect_sample_size: 50
+    beta: 0.9
+    description: null
+    method: fixed
+    name: layout
+    target_distribution: uniform
+    values:
+    - written as a terse GDS export like the examples
+    - written as an agent email like the examples
+    - written as a pipe-separated table like the examples
+  num_distractor_context_blocks: 0
+  num_negative_exemplars_per_generation: 1
+  num_positive_exemplars_per_generation: 1
+  num_unlabelled_exemplars_per_generation: 1
+  output_is_json: true
+  parallel_llm_calls: false
+  teacher_max_tokens: 32000
+  teacher_temperature: 0.6
+  validation_max_answer_length: 8192
+  validation_max_total_length: 30000
+  validation_similarity_threshold: 0.95
+trace_processing:
+  committee_max_input_length: 250000
+  compress_job_description: false
+  evaluate_original_model: true
+  max_unstructured: 10000
+  min_coherence_score: 3
+  min_generated_examples: 1
+  min_relevance_score: 4
+  num_traces_as_testing_base: 200
+  num_traces_as_training_base: 200
+  observation_format: openai_messages
+  relabel: true
+  relabelling_committee_models: []
+  relevance_filtering: false
+  relevance_filtering_batch_size: 32
+  remove_system_prompt_from_traces: true
+  teacher_model_name: moonshotai.kimi-k3-max-thinking
+tuning:
+  awq_quantize_tuned_model: false
+  bf16: true
+  enable_trainer_internal_eval: false
+  gradient_accumulation_steps: 1
+  learning_rate: 5.0e-05
+  learning_rate_scheduler: linear
+  lora_alpha_multiplier: 1
+  lora_r: 64
+  max_completion_length: 2048
+  memory_optimized_training: false
+  num_few_shot_examples_student: 0
+  num_train_epochs: 4
+  per_device_eval_batch_size: 1
+  per_device_train_batch_size: 1
+  rlvr_dataset_size: 0.0
+  rlvr_gradient_accumulation_steps: 1
+  rlvr_learning_rate: 1.0e-06
+  rlvr_llm_as_a_judge_model_name: moonshotai.kimi-k3-max-thinking
+  rlvr_num_generations: 6
+  rlvr_num_train_epochs: 1
+  rlvr_per_device_batch_size: 6
+  rlvr_reward_metric: llm-judge-reference-free
+  rlvr_vllm_gpu_memory_utilization: 0.3
+  rlvr_weight_decay: 0.0
+  train_eval_split: 0.2
+  use_lora: true
+  use_qlora: false
+  warmup_ratio: 0.05
+  weight_decay: 0.0

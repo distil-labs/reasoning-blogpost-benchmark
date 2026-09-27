@@ -1,0 +1,185 @@
+base:
+  enable_thinking: false
+  llm_num_parallel_requests: 16
+  random_seed: 123
+  student_model_name: Qwen3.5-4B
+  task: question-answering
+  teacher_model_name: zai.glm-5.3-high-thinking
+  visual_task: false
+evaluation:
+  batch_size: 4
+  llm_as_a_judge_model_name: zai.glm-5.3-high-thinking
+  num_few_shot_examples: 1
+synthgen:
+  basic_mutators_to_use: []
+  clean_training_targets: false
+  generation_in_single_call: 2
+  generation_iteration_size: 128
+  generation_per_unstructured_context: null
+  generation_target: 4000
+  match_generated_distribution_to_seed: false
+  max_tool_calls_per_turn: null
+  mutation_topics: []
+  mutator_update_frequency: 5
+  mutators:
+  - beta: 0.9
+    description: null
+    method: fixed
+    name: label
+    target_distribution: uniform
+    values:
+    - cases whose correct decision is approve
+    - cases whose correct decision is approve
+    - cases whose correct decision is approve
+    - cases whose correct decision is approve
+    - cases whose correct decision is approve
+    - cases whose correct decision is hold_no_po
+    - cases whose correct decision is hold_no_po
+    - cases whose correct decision is hold_quantity
+    - cases whose correct decision is hold_quantity
+    - cases whose correct decision is hold_quantity
+    - cases whose correct decision is hold_price
+    - cases whose correct decision is hold_price
+    - cases whose correct decision is hold_price
+    - cases whose correct decision is hold_price
+    - cases whose correct decision is hold_price
+    - cases whose correct decision is hold_total
+    - cases whose correct decision is hold_total
+    - cases whose correct decision is hold_total
+    - cases whose correct decision is hold_total
+    - cases whose correct decision is hold_total
+  - beta: 0.9
+    description: null
+    method: fixed
+    name: difficulty
+    target_distribution: uniform
+    values:
+    - 'as clean as the label allows: apart from what the label requires, every quantity,
+      price and the total match exactly'
+    - 'near misses on price that still pass: one unit price 1.0 to 1.9 percent above
+      the PO price and another price below the PO price; if the label is hold_price,
+      the failing price is only 2.1 to 3 percent above the PO price'
+    - 'near misses on price that still pass: one unit price 1.0 to 1.9 percent above
+      the PO price and another price below the PO price; if the label is hold_price,
+      the failing price is only 2.1 to 3 percent above the PO price'
+    - 'partial deliveries: one or two items received short; unless the label is hold_quantity
+      the invoice bills only the received quantity, and if the label is hold_quantity
+      the excess is only 1 or 2 units'
+    - cases where a later check would fail too, so the earliest failing check in the
+      policy order decides the label
+    - 'close totals: if the label is hold_total the stated total is off by a transposed
+      digit or by less than 30; otherwise the total is exactly right even though the
+      line totals have awkward cents'
+  - beta: 0.9
+    description: null
+    method: fixed
+    name: invoice_style
+    target_distribution: uniform
+    values:
+    - 'written with the invoice as a terse ERP export: upper-case abbreviations and
+      pipe-separated columns'
+    - written with the invoice as a polite email with one bullet per line item
+    - 'written with the invoice as a forwarded thread: a Northwind employee forwards
+      the vendor''s message with a short note'
+    - written with the invoice as numbered sentences, one per line item
+    - written with the invoice as a plain-text table with aligned columns and a totals
+      block
+  - beta: 0.9
+    description: null
+    method: fixed
+    name: line_layout
+    target_distribution: uniform
+    values:
+    - built with 3 invoice lines in the same order as the PO
+    - built with 3 invoice lines in a different order than the PO
+    - built with 4 invoice lines in a different order than the PO
+    - built with 4 invoice lines in the same order as the PO
+    - built with 5 invoice lines in a different order than the PO
+    - built with 6 invoice lines in a different order than the PO
+    - built with 6 invoice lines in the same order as the PO
+    - built with 5 invoice lines in a different order than the PO
+  - beta: 0.9
+    description: null
+    method: fixed
+    name: item_naming
+    target_distribution: uniform
+    values:
+    - written so the invoice uses upper-case vendor abbreviations for the item names,
+      not the PO wording
+    - written so the invoice rewords the item names, not the PO wording
+    - written so the invoice mixes identical, abbreviated and reworded item names
+  - beta: 0.9
+    description: null
+    method: fixed
+    name: extras
+    target_distribution: uniform
+    values:
+    - without freight and without any amount that is not part of the invoice
+    - without freight and without any amount that is not part of the invoice
+    - without freight and without any amount that is not part of the invoice
+    - with a freight or shipping charge on the invoice; choose whether the PO allows
+      freight so that the label stays correct
+    - with a previous account balance mentioned in the message, which is not part
+      of this invoice
+    - with a payment received for an older invoice mentioned in the message, which
+      is not part of this invoice
+    - with a quote for a future order mentioned in the message, which is not part
+      of this invoice
+  num_distractor_context_blocks: 0
+  num_negative_exemplars_per_generation: 1
+  num_positive_exemplars_per_generation: 1
+  num_unlabelled_exemplars_per_generation: 1
+  output_is_json: true
+  parallel_llm_calls: false
+  teacher_max_tokens: 32000
+  teacher_temperature: 0.6
+  validation_max_answer_length: 8192
+  validation_max_total_length: 30000
+  validation_similarity_threshold: 0.95
+trace_processing:
+  committee_max_input_length: 250000
+  compress_job_description: false
+  evaluate_original_model: true
+  max_unstructured: 10000
+  min_coherence_score: 3
+  min_generated_examples: 1
+  min_relevance_score: 4
+  num_traces_as_testing_base: 200
+  num_traces_as_training_base: 200
+  observation_format: openai_messages
+  relabel: true
+  relabelling_committee_models: []
+  relevance_filtering: false
+  relevance_filtering_batch_size: 32
+  remove_system_prompt_from_traces: true
+  teacher_model_name: zai.glm-5.3-high-thinking
+tuning:
+  awq_quantize_tuned_model: false
+  bf16: true
+  enable_trainer_internal_eval: false
+  gradient_accumulation_steps: 1
+  learning_rate: 5.0e-05
+  learning_rate_scheduler: linear
+  lora_alpha_multiplier: 1
+  lora_r: 64
+  max_completion_length: 2048
+  memory_optimized_training: false
+  num_few_shot_examples_student: 0
+  num_train_epochs: 4
+  per_device_eval_batch_size: 1
+  per_device_train_batch_size: 1
+  rlvr_dataset_size: 0.0
+  rlvr_gradient_accumulation_steps: 1
+  rlvr_learning_rate: 1.0e-06
+  rlvr_llm_as_a_judge_model_name: zai.glm-5.3-high-thinking
+  rlvr_num_generations: 6
+  rlvr_num_train_epochs: 1
+  rlvr_per_device_batch_size: 6
+  rlvr_reward_metric: llm-judge-reference-free
+  rlvr_vllm_gpu_memory_utilization: 0.3
+  rlvr_weight_decay: 0.0
+  train_eval_split: 0.2
+  use_lora: true
+  use_qlora: false
+  warmup_ratio: 0.05
+  weight_decay: 0.0
